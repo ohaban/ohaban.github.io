@@ -172,6 +172,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .panel { display: grid; gap: 28px; grid-template-columns: minmax(0, 1fr); }
 .wrap, .menu-list, .menu-item { grid-template-columns: minmax(0, 1fr); }
 .photo-slot { width: 100%; }
+/* 사진 받기 전까지 사진 자리 숨김 */
+.photo-slot { display: none; }
 
 /* about */
 .eyebrow { font-size: 12px; letter-spacing: 0.18em; color: var(--accent); margin: 0; }
@@ -214,7 +216,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .map-link { justify-self: start; color: var(--accent); font-size: 13.5px; text-underline-offset: 3px; }
 .map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: saturate(0.75) sepia(0.08); }
 .map-fallback { position: absolute; inset: 0; margin: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 16px; color: var(--muted); font-size: 13px; }
-.navi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.navi { display: grid; grid-template-columns: repeat(auto-fit, minmax(0, 1fr)); gap: 8px; }
 .navi button { min-height: 52px; border-radius: var(--r); border: 1px solid var(--line); background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; font-weight: 600; cursor: pointer; }
 .navi button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .navi-note { font-size: 13px; color: var(--muted); margin: 0; }
@@ -557,7 +559,7 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
     <div class="field">
       <span class="label">길안내 앱으로 바로 열기</span>
       <div class="navi">
-        <button type="button" data-navi="tmap">티맵</button>
+        <button type="button" data-navi="tmap" hidden>티맵</button>
         <button type="button" data-navi="naver">네이버지도</button>
         <button type="button" data-navi="kakao">카카오맵</button>
       </div>
