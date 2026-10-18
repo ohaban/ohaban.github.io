@@ -173,7 +173,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .wrap, .menu-list, .menu-item { grid-template-columns: minmax(0, 1fr); }
 .photo-slot { width: 100%; }
 /* 사진 받기 전까지 사진 자리 숨김 */
-.photo-slot { display: none; }
+.photo-slot { display: none !important; }
 
 /* about */
 .eyebrow { font-size: 12px; letter-spacing: 0.18em; color: var(--accent); margin: 0; }
@@ -194,6 +194,13 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .story { display: grid; gap: 14px; max-width: 34em; }
 .story p { margin: 0; }
 .story .closing { font-family: var(--font-display); font-size: 19px; line-height: 1.6; color: var(--accent); padding-top: 8px; }
+
+.event { border: 1px solid var(--persimmon); border-radius: var(--r); padding: 16px; display: grid; gap: 6px; background: var(--surface); }
+.event-tag { margin: 0; font-size: 11.5px; letter-spacing: 0.16em; color: var(--accent); }
+.event h4 { margin: 0; font-family: var(--font-display); font-size: 18px; font-weight: 600; }
+.event p { margin: 0; font-size: 14px; }
+.event b { font-weight: 600; }
+.event small { color: var(--muted); font-size: 12.5px; }
 
 /* menu */
 .sec-title { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin: 0; }
@@ -306,7 +313,11 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
       <article class="menu-item">
         <div class="photo-slot">환갑·칠순·팔순상 사진 자리</div>
         <h4>환갑 · 칠순 · 팔순상</h4>
-        <p class="desc">부모님 잔치 상차림입니다. 가격은 카카오톡으로 문의해 주세요.</p>
+        <div class="opt">
+          <div><span>고급 생화 분재</span><span><s>40만</s><b>32만원</b></span></div>
+          <div><span>달항아리 프리미엄 조화</span><span><s>35만</s><b>28만원</b></span></div>
+        </div>
+        <p class="desc">8폭 주문제작 병풍, 작가 그릇, 작가 달항아리, 실물 떡 3종과 제철 생과일로 상을 차립니다. 상차림과 가족 사진을 함께 촬영하고, 원본과 보정본 7장을 드립니다. 보정은 성인 5명까지 포함입니다.</p>
       </article>
     </div>
     <div class="facts">
@@ -314,6 +325,12 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
       <p>홍보 사진 사용에 동의하시면 1만원을 추가로 할인해 드립니다.</p>
       <p>예약금 15만원 입금 시 예약이 확정됩니다.</p>
     </div>
+    <div class="event">
+        <p class="event-tag">예약 고객님 한정</p>
+        <h4>친구 추천 이벤트</h4>
+        <p>예약하신 고객님의 추천으로 지인분이 예약 후 촬영하시면, <b>1건당 1만원을 캐시백</b>해 드립니다. 추천받아 촬영하신 친구분께는 <b>스타벅스 커피 쿠폰</b>을 드려요.</p>
+        <small>캐시백과 커피 쿠폰은 추천 친구의 촬영이 끝난 뒤 건수를 정산해 드립니다.</small>
+      </div>
 
     <div>
       <h2 class="sec-title">출장 돌상</h2>
@@ -354,6 +371,8 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
           <tr><th>달항아리 조화 백일상</th><td><s>35만</s><b>28만원</b></td></tr>
           <tr><th>생화 분재 돌상</th><td><s>48만</s><b>38만원</b></td></tr>
           <tr><th>달항아리 조화 돌상</th><td><s>42만</s><b>33만원</b></td></tr>
+          <tr><th>생화 분재 환갑·칠순·팔순상</th><td><s>40만</s><b>32만원</b></td></tr>
+          <tr><th>달항아리 조화 환갑·칠순·팔순상</th><td><s>35만</s><b>28만원</b></td></tr>
         </table>
         <small>홍보 사진 사용에 동의하시면 1만원을 추가로 할인해 드립니다. 가족촬영은 추가금 없이 함께 진행합니다.</small>
       </div>
@@ -539,6 +558,12 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
       <div class="acct"><code id="acctText"></code><button type="button" class="btn-line" id="copyBtn">계좌 복사</button></div>
     </div>
     <a class="kakao" id="kakaoBtn" href="#" target="_blank" rel="noopener">카카오톡 채널로 입금 알리기</a>
+    <div class="event">
+        <p class="event-tag">예약 고객님 한정</p>
+        <h4>친구 추천 이벤트</h4>
+        <p>예약하신 고객님의 추천으로 지인분이 예약 후 촬영하시면, <b>1건당 1만원을 캐시백</b>해 드립니다. 추천받아 촬영하신 친구분께는 <b>스타벅스 커피 쿠폰</b>을 드려요.</p>
+        <small>캐시백과 커피 쿠폰은 추천 친구의 촬영이 끝난 뒤 건수를 정산해 드립니다.</small>
+      </div>
     <dl class="recap" id="recap"></dl>
     <p class="preview-note" id="previewNote" hidden>미리보기 화면이라 실제로 접수되지는 않았습니다.</p>
   </section>
@@ -571,6 +596,14 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
         <div><span>11:00</span><span>월~토</span></div>
         <div><span>14:00</span><span>매일</span></div>
         <div><span>15:30</span><span>매일</span></div>
+      </div>
+      <p class="hint">별도 휴무일 없이 운영합니다.</p>
+    </div>
+    <div class="field">
+      <span class="label">주차 · 건물</span>
+      <div class="hours">
+        <div><span>주차</span><span>무료 (실외 주차장)</span></div>
+        <div><span>엘리베이터</span><span>있음 · 4층</span></div>
       </div>
     </div>
     <div class="field">
@@ -637,6 +670,7 @@ const VISIT_PRICE = {
   "백일상": { "고급 생화 분재":[400000,320000], "달항아리 프리미엄 조화":[350000,280000] },
   "돌상":   { "고급 생화 분재":[480000,380000], "달항아리 프리미엄 조화":[420000,330000] }
 };
+["환갑상","칠순상","팔순상"].forEach(t => VISIT_PRICE[t] = { "고급 생화 분재":[400000,320000], "달항아리 프리미엄 조화":[350000,280000] });
 const REFUND = {
   visit: "행사일 30일 전까지는 예약금 전액 환불, 그 이후에는 환불되지 않습니다. 행사 전날과 당일에는 취소할 수 없으며, 질병이나 감염병으로 인한 날짜 변경은 1회 가능합니다.",
   outing: "예약금 입금 후 1개월 이내 취소 시 전액 환불, 그 이후에는 취소할 수 없습니다. 질병이나 감염병으로 인한 날짜 변경은 1회 가능합니다."
