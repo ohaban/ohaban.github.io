@@ -189,6 +189,10 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .btn.ghost { background: transparent; color: var(--accent); flex: 1 1 140px; }
 .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
 
+.story { display: grid; gap: 14px; max-width: 34em; }
+.story p { margin: 0; }
+.story .closing { font-family: var(--font-display); font-size: 19px; line-height: 1.6; color: var(--accent); padding-top: 8px; }
+
 /* menu */
 .sec-title { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin: 0; }
 .sec-sub { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
@@ -250,16 +254,23 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
   <section class="panel" id="p-about">
     <div class="lede">
       <p class="eyebrow">용인 동백 프라이빗 상차림 스튜디오</p>
-      <h2>잔치 비용은 줄이고, 사진은 오래 남게</h2>
-      <p>오하반은 저희 아이 돌잔치를 준비하던 경험에서 시작했습니다. 식당 대관은 비용이 컸고, 상차림을 빌려 직접 차리는 일도, 출장 상차림도 부담스러웠어요.</p>
-      <p>그래서 잘 차려진 상 앞에서 사진을 남기고, 식사는 가까운 식당에서 편하게 했습니다. 비용은 줄고 사진은 더 근사하게 남았죠. 그 경험을 그대로 옮긴 곳이 오하반입니다.</p>
+      <h2>백일도, 돌도<br>몸만 오셔서 편하게</h2>
+    </div>
+    <div class="story">
+      <p>안녕하세요. 동백에 사는 엄마입니다.<br>저희 아이 백일에는 집에서 직접 백일상을 차렸어요.</p>
+      <p>떡을 주문하고, 과일을 사다 씻고, 테이블보를 다리고, 병풍 대신 커튼을 치고. 새벽부터 상을 차리고, 아기를 달래 가며 사진을 찍고, 끝나고 나서는 다시 하나하나 정리했어요.</p>
+      <p>아기 달래랴, 사진 찍으랴 정신없이 하루를 보내고 나니 예쁜 추억을 남기고 싶었던 마음보다 힘들고 분주했던 기억이 더 많이 남았어요.</p>
+      <p>그래서 돌잔치 때는 조금 다르게 해봤어요. 스튜디오에서 가족끼리 상차림 사진을 찍고, 근처 식당에서 편하게 밥을 먹었어요. 준비할 것도, 치울 것도 줄어드니 아이에게도 가족에게도 훨씬 여유로운 하루가 되더라고요. 사진도 훨씬 좋았어요.</p>
+      <p>그때의 경험을 담아 용인 동백에, 몸만 오셔서 백일상과 돌상을 촬영하실 수 있는 잔치 상차림 스튜디오를 만들었습니다.</p>
+      <p class="closing">엄마의 수고는 덜고,<br>우리 아기의 예쁜 순간은 오래 남도록.</p>
     </div>
     <div class="photo-slot">대표 사진 자리<br>스튜디오 상차림 전경</div>
     <ul class="points">
-      <li><b>우리 가족만의 프라이빗 공간</b><span>상차림이 세팅된 공간에서 편하게 촬영합니다.</span></li>
-      <li><b>가족촬영 추가금 없음</b><span>아이 단독 사진과 함께 가족사진도 남겨 드립니다.</span></li>
-      <li><b>백일부터 팔순까지</b><span>백일상, 돌상, 환갑·칠순·팔순상을 준비합니다.</span></li>
-      <li><b>출장 돌상</b><span>원하시는 잔치 장소로 찾아가 상을 차려 드립니다.</span></li>
+      <li><b>정성껏 차린 상차림</b><span>8폭 주문제작 병풍과 작가 도자기 그릇, 실물 떡 3종과 제철 생과일로 상을 차려요. 떡과 과일은 촬영용 소품으로, 따로 드리지 않습니다.</span></li>
+      <li><b>아기 한복 준비</b><span>원하시는 한복을 골라 입히시면 됩니다.</span></li>
+      <li><b>준비도, 정리도 없이</b><span>엄마가 따로 준비하실 것도, 촬영 후 정리하실 것도 없어요.</span></li>
+      <li><b>가족촬영 추가금 없음</b><span>아기 단독 사진과 함께 가족사진도 남겨 드립니다.</span></li>
+      <li><b>백일부터 팔순까지, 출장 돌상도</b><span>백일상, 돌상, 환갑·칠순·팔순상을 준비하고, 원하시는 잔치 장소로 출장도 갑니다.</span></li>
     </ul>
     <div class="btn-row">
       <a class="btn primary" href="#reserve">예약 신청하기</a>
