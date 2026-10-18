@@ -202,6 +202,14 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .event b { font-weight: 600; }
 .event small { color: var(--muted); font-size: 12.5px; }
 
+.incl { margin: 0; display: grid; gap: 6px; font-size: 14px; padding-top: 4px; }
+.incl div { display: grid; grid-template-columns: 52px 1fr; gap: 8px; }
+.incl dt { color: var(--muted); }
+.incl dd { margin: 0; min-width: 0; }
+.more { justify-self: start; color: var(--accent); font-size: 13.5px; text-underline-offset: 3px; }
+.menu-list { gap: 30px; }
+.menu-item + .menu-item { padding-top: 26px; border-top: 1px solid var(--line); }
+
 /* menu */
 .sec-title { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin: 0; }
 .sec-sub { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
@@ -296,8 +304,7 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
     </div>
     <div class="facts">
       <p><b>모든 상차림 기본 구성</b></p>
-      <p>8폭 주문제작 병풍, 작가 도자기 그릇, 실물 떡 3종과 제철 생과일로 상을 차려요. 떡과 과일은 촬영용 소품으로 따로 드리지 않습니다.</p>
-      <p>백일상·돌상은 준비된 아기 한복을 골라 입히실 수 있어요. 가족사진은 추가금 없이 함께 찍어 드립니다.</p>
+      <p>8폭 주문제작 병풍, 작가 그릇, 작가 달항아리, 실물 떡 3종, 제철 생과일이 올라갑니다. 떡과 과일은 촬영용 소품으로 따로 드리지 않습니다.</p>
     </div>
     <div class="menu-list">
       <article class="menu-item">
@@ -307,6 +314,11 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
           <div><span>고급 생화 분재</span><span><s>40만</s><b>32만원</b></span></div>
           <div><span>달항아리 프리미엄 조화</span><span><s>35만</s><b>28만원</b></span></div>
         </div>
+        <dl class="incl">
+          <div><dt>포함</dt><dd>상차림, 아기 한복, 아기 단독 + 가족 사진 촬영, 원본 제공, 보정본 7장</dd></div>
+          <div><dt>의상</dt><dd>백일 한복, 금장식 고급 매듭띠, 복건·조바위·갓·헤어밴드·보넷</dd></div>
+        </dl>
+        <a class="more" href="https://pf.kakao.com/_FKgnj/113766022" target="_blank" rel="noopener">백일상 상세 사진 보기</a>
       </article>
       <article class="menu-item">
         <div class="photo-slot">돌상 사진 자리</div>
@@ -315,6 +327,13 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
           <div><span>고급 생화 분재</span><span><s>48만</s><b>38만원</b></span></div>
           <div><span>달항아리 프리미엄 조화</span><span><s>42만</s><b>33만원</b></span></div>
         </div>
+        <dl class="incl">
+          <div><dt>포함</dt><dd>상차림, 아기 한복, 돌잡이, 아기 단독 + 가족 사진 촬영, 원본 제공, 보정본 10장</dd></div>
+          <div><dt>의상</dt><dd>프리미엄 원삼 한복, 금장식 매듭띠·돌띠, 복건·갓·조바위·헤어밴드</dd></div>
+          <div><dt>돌잡이</dt><dd>11종 구성</dd></div>
+          <div><dt>혜택</dt><dd>인스타 팔로워·당근 단골이시면 캐주얼 수트 또는 드레스 무료 대여 및 촬영</dd></div>
+        </dl>
+        <a class="more" href="https://pf.kakao.com/_FKgnj/113766635" target="_blank" rel="noopener">돌상 상세 사진 보기</a>
       </article>
       <article class="menu-item">
         <div class="photo-slot">환갑·칠순·팔순상 사진 자리</div>
@@ -323,13 +342,18 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
           <div><span>고급 생화 분재</span><span><s>40만</s><b>32만원</b></span></div>
           <div><span>달항아리 프리미엄 조화</span><span><s>35만</s><b>28만원</b></span></div>
         </div>
+        <dl class="incl">
+          <div><dt>포함</dt><dd>상차림, 가족 사진 촬영, 원본 제공, 보정본 7장 (성인 5명까지 보정 포함)</dd></div>
+        </dl>
+        <a class="more" href="http://pf.kakao.com/_FKgnj/113767115" target="_blank" rel="noopener">환갑·칠순·팔순상 상세 사진 보기</a>
       </article>
     </div>
     <div class="facts">
       <p>병풍은 꽃병풍, 무지병풍, 무지병풍 + 글씨가랜드 중에서 고르실 수 있습니다.</p>
       <p>홍보 사진 사용에 동의하시면 1만원을 추가로 할인해 드립니다.</p>
-      <p>예약금 15만원 입금 시 예약이 확정됩니다.</p>
+      <p>예약은 카카오톡 상담 후 예약 링크로 주문서를 작성하시고, 예약금 15만원 입금까지 마치시면 확정됩니다.</p>
     </div>
+    <div class="btn-row"><a class="btn ghost" href="https://pf.kakao.com/_FKgnj/chat" target="_blank" rel="noopener">원하시는 날짜 카카오톡으로 문의하기</a></div>
     <div class="event">
         <p class="event-tag">예약 고객님 한정</p>
         <h4>친구 추천 이벤트</h4>
