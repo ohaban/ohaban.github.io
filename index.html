@@ -206,6 +206,8 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 /* contact */
 .addr { font-size: 16px; font-weight: 500; margin: 0; }
 .map { position: relative; aspect-ratio: 4 / 3; max-width: 100%; border-radius: var(--r); overflow: hidden; border: 1px solid var(--line); background: var(--sand); }
+.map-canvas { position: absolute; inset: 0; }
+.map-link { justify-self: start; color: var(--accent); font-size: 13.5px; text-underline-offset: 3px; }
 .map iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; filter: saturate(0.75) sepia(0.08); }
 .map-fallback { position: absolute; inset: 0; margin: 0; display: flex; align-items: center; justify-content: center; text-align: center; padding: 16px; color: var(--muted); font-size: 13px; }
 .navi { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
@@ -536,11 +538,11 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
       <p class="addr" id="addrText">경기도 용인시 기흥구 언동로125번길 16-6 청솔빌딩 4층</p>
       <div class="btn-row"><button type="button" class="btn-line" id="addrCopy">주소 복사</button></div>
     </div>
-    <div class="map">
+    <div class="map" id="mapBox">
       <p class="map-fallback">지도를 불러오고 있어요.<br>보이지 않으면 아래 길안내 버튼을 눌러 주세요.</p>
-      <iframe title="오하반 위치 지도" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
-        src="https://maps.google.com/maps?q=%EA%B2%BD%EA%B8%B0%EB%8F%84%20%EC%9A%A9%EC%9D%B8%EC%8B%9C%20%EA%B8%B0%ED%9D%A5%EA%B5%AC%20%EC%96%B8%EB%8F%99%EB%A1%9C125%EB%B2%88%EA%B8%B8%2016-6&z=17&hl=ko&output=embed"></iframe>
+      <div id="nmap" class="map-canvas"></div>
     </div>
+    <a class="map-link" href="https://map.naver.com/p/entry/place/2009199286" target="_blank" rel="noopener">네이버 지도에서 크게 보기</a>
     <div class="field">
       <span class="label">길안내 앱으로 바로 열기</span>
       <div class="navi">
@@ -548,7 +550,7 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
         <button type="button" data-navi="naver">네이버지도</button>
         <button type="button" data-navi="kakao">카카오맵</button>
       </div>
-      <p class="navi-note" id="naviNote">앱이 설치되어 있으면 오하반까지 길안내가 바로 시작됩니다.</p>
+      <p class="navi-note" id="naviNote">네이버지도·카카오맵은 오하반 매장 화면이 열리면 길찾기를 눌러 주세요.</p>
     </div>
     <div class="field">
       <span class="label">촬영 시간</span>
@@ -801,6 +803,7 @@ function route() {
   const h = location.hash.replace("#", "");
   const t = TABS.includes(h) ? h : "reserve";
   TABS.forEach(k => { document.getElementById("p-" + k).hidden = k !== t; });
+  if (t === "visit" && typeof startMap === "function") startMap();
   document.querySelectorAll(".tabs a").forEach(a => {
     if (a.dataset.tab === t) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   });
@@ -809,7 +812,7 @@ function route() {
 window.addEventListener("hashchange", route);
 
 /* 길안내 */
-const DEST = { name: "오하반", lat: 37.2843739, lng: 127.1413741, naverPlace: "2009199286" };
+const DEST = { name: "오하반", lat: 37.2843739, lng: 127.1413741, naverPlace: "2009199286", kakaoPlace: "840125362" };
 const IS_ANDROID = /android/i.test(navigator.userAgent);
 // 안드로이드는 intent 주소가 더 잘 열림 (앱 없으면 웹 지도나 플레이스토어로)
 function toIntent(scheme, pkg, fallback) {
@@ -830,15 +833,43 @@ document.querySelectorAll("[data-navi]").forEach(b => b.addEventListener("click"
   if (b.dataset.navi === "tmap")
     openApp(`tmap://route?goalname=${n}&goalx=${lng}&goaly=${lat}`, "", "티맵 앱이 없거나 열리지 않았어요. 네이버지도나 카카오맵을 눌러 주세요.", "com.skt.tmap.ku");
   if (b.dataset.navi === "naver")
-    openApp(`nmap://route/car?dlat=${lat}&dlng=${lng}&dname=${n}&appname=ohaban`, `https://map.naver.com/p/entry/place/${DEST.naverPlace}`, "", "com.nhn.android.nmap");
+    location.href = `https://map.naver.com/p/entry/place/${DEST.naverPlace}`; // 네이버 플레이스 오하반 (정확한 매장 위치)
   if (b.dataset.navi === "kakao")
-    openApp(`kakaomap://route?ep=${lat},${lng}&by=CAR`, `https://map.kakao.com/link/to/${n},${lat},${lng}`, "", "net.daum.android.map");
+    openApp(`kakaomap://place?id=${DEST.kakaoPlace}`, `https://place.map.kakao.com/${DEST.kakaoPlace}`, "", "net.daum.android.map"); // 카카오맵 오하반 장소
 }));
 $("#addrCopy").addEventListener("click", () => {
   const done = () => { $("#addrCopy").textContent = "복사했어요"; };
   const sel = () => { const r = document.createRange(); r.selectNodeContents($("#addrText")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
   try { navigator.clipboard.writeText($("#addrText").textContent).then(done).catch(sel); } catch (e) { sel(); }
 });
+
+/* 지도: 네이버 지도 (키가 없거나 실패하면 구글 지도로 대체) */
+const NAVER_MAP_KEY = "";   // 네이버 클라우드 Maps의 Client ID
+let mapStarted = false;
+function googleMap() {
+  const box = $("#mapBox"); if (box.querySelector("iframe")) return;
+  $("#nmap").remove();
+  const f = document.createElement("iframe");
+  f.title = "오하반 위치 지도"; f.loading = "lazy";
+  f.src = "https://maps.google.com/maps?q=" + encodeURIComponent("오하반, 경기도 용인시 기흥구 언동로125번길 16-6") + "&z=17&hl=ko&output=embed";
+  box.append(f);
+}
+window.navermap_authFailure = googleMap;
+function startMap() {
+  if (mapStarted) return; mapStarted = true;
+  if (!NAVER_MAP_KEY) { googleMap(); return; }
+  const sc = document.createElement("script");
+  sc.src = `https://oapi.map.naver.com/openapi/v3/maps.js?ncpKeyId=${NAVER_MAP_KEY}`;
+  sc.onload = () => {
+    try {
+      const pos = new naver.maps.LatLng(DEST.lat, DEST.lng);
+      const map = new naver.maps.Map("nmap", { center: pos, zoom: 17, scaleControl: false, mapDataControl: false, logoControlOptions: { position: naver.maps.Position.BOTTOM_LEFT } });
+      new naver.maps.Marker({ position: pos, map });
+    } catch (e) { googleMap(); }
+  };
+  sc.onerror = googleMap;
+  document.head.append(sc);
+}
 
 (function init() {
   route();
