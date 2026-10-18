@@ -473,7 +473,6 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
             <label class="chip"><input type="radio" name="vtime" id="vt-14" value="14:00 (월,화,수,목,금,토,일)"><span>14:00</span></label>
             <label class="chip"><input type="radio" name="vtime" id="vt-1530" value="15:30 (월,화,수,목,금,토,일)"><span>15:30</span></label>
           </div>
-          <p class="hint" id="sundayHint">11시 타임은 일요일에 운영하지 않습니다.</p>
           <span class="err">시간을 골라 주세요.</span>
         </div>
         <div class="field" id="f-otime" data-only="outing" hidden>
@@ -622,9 +621,8 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
     <div class="field">
       <span class="label">촬영 시간</span>
       <div class="hours">
-        <div><span>11:00</span><span>월~토</span></div>
-        <div><span>14:00</span><span>매일</span></div>
-        <div><span>15:30</span><span>매일</span></div>
+        <div><span>오전</span><span>11:00</span></div>
+        <div><span>오후</span><span>14:00 · 15:30</span></div>
       </div>
       <p class="hint">별도 휴무일 없이 운영합니다.</p>
     </div>
@@ -729,7 +727,7 @@ function applyHonoree() {
 function applyDate() {
   const v = $("#date").value; let sunday = false;
   if (v) { const [y,mo,d] = v.split("-").map(Number); sunday = new Date(y, mo-1, d).getDay() === 0; }
-  const el = $("#vt-11"); el.disabled = sunday; if (sunday && el.checked) el.checked = false;
+  // 일요일 11시도 열어 둠 (상담에서 조율)
 }
 
 function priceLines() {
