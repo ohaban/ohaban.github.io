@@ -499,10 +499,19 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
         <div class="field" id="f-gender">
           <span class="label" id="genderLabel">아기 성별</span>
           <div class="chips">
-            <label class="chip"><input type="radio" name="gender" id="g-m" value="남아"><span id="gmText">남아</span></label>
-            <label class="chip"><input type="radio" name="gender" id="g-f" value="여아"><span id="gfText">여아</span></label>
+            <label class="chip"><input type="checkbox" name="gender" id="g-m" value="남아"><span id="gmText">남아</span></label>
+            <label class="chip"><input type="checkbox" name="gender" id="g-f" value="여아"><span id="gfText">여아</span></label>
           </div>
+          <p class="hint">이란성 쌍둥이는 남아·여아 모두 선택해 주세요.</p>
           <span class="err">성별을 골라 주세요.</span>
+        </div>
+        <div class="field" id="f-twin">
+          <span class="label">쌍둥이 한복 추가</span>
+          <div class="chips">
+            <label class="chip" id="tw-100-wrap"><input type="checkbox" name="twin" id="tw-100" value="백일 한복 + 30,000원" data-price="30000"><span>백일 한복 추가 <small>+3만원</small></span></label>
+            <label class="chip" id="tw-dol-wrap"><input type="checkbox" name="twin" id="tw-dol" value="돌 한복 + 50,000원" data-price="50000"><span>돌 한복 추가 <small>+5만원</small></span></label>
+          </div>
+          <p class="hint">쌍둥이인 경우에만 선택해 주세요. 한 분 몫의 한복이 추가됩니다.</p>
         </div>
         <div class="field" id="f-people">
           <span class="label" id="peopleLabel">방문 인원</span>
@@ -674,7 +683,7 @@ const FORMS = {
     entries: { name:"1000057", phone:"1000027", date:"967112212", time:"2055232012", table:"1000020",
                flower:"2002863747", screen:"1000026", honoree:"1081691998", gender:"1000022",
                people:"1000025", receipt:"1047653863", email:"1631296634", promo:"688383679",
-               agree1:"2101725047", agree2:"515021855" }
+               agree1:"2101725047", agree2:"515021855", twin:"2048934485" }
     // 환갑·칠순·팔순상은 '아기 성별' 칸에 "부모님 잔치 시 체크"를 보냄
   },
   outing: {
@@ -683,7 +692,7 @@ const FORMS = {
     entries: { name:"1000057", phone:"1000027", date:"967112212", time:"2055232012",
                place:"1000020", flower:"2002863747", screen:"1000026", honoree:"1081691998", gender:"1000022",
                people:"1000025", receipt:"1047653863", email:"1631296634", promo:"688383679",
-               agree1:"2101725047", agree2:"515021855", photo:"" } // photo: 폼에 질문 추가 후 입력
+               agree1:"2101725047", agree2:"515021855", twin:"1146649103", photo:"" } // photo: 폼에 질문 추가 후 입력
   }
 };
 const AGREE_VALUE = "확인했습니다.";
@@ -693,6 +702,7 @@ const LIVE = /github\.io$/.test(location.hostname);
 
 const $ = s => document.querySelector(s);
 const checked = n => { const el = document.querySelector(`input[name="${n}"]:checked`); return el ? el.value : ""; };
+const checkedAll = n => [...document.querySelectorAll(`input[name="${n}"]:checked`)].map(el => el.value);
 const won = n => n.toLocaleString("ko-KR") + "원";
 const PARENTS = ["환갑상","칠순상","팔순상"];
 const VISIT_PRICE = {
@@ -725,6 +735,18 @@ function applyHonoree() {
   $("#whoTitle").textContent = p ? "주인공과 방문 인원" : (mode() === "visit" ? "아기와 방문 인원" : "아기와 참석 인원");
   $("#honoreeLabel").textContent = p ? "주인공 성함" : "아기 이름";
   $("#f-gender").hidden = p;
+  applyTwin();
+}
+function applyTwin() {
+  // 방문: 백일상→백일 한복, 돌상→돌 한복, 부모님 잔치→숨김 / 출장: 둘 다
+  const m = mode(), t = checked("table");
+  const show100 = m === "outing" || t === "백일상", showDol = m === "outing" || t === "돌상";
+  $("#tw-100-wrap").hidden = !show100; if (!show100) $("#tw-100").checked = false;
+  $("#tw-dol-wrap").hidden = !showDol; if (!showDol) $("#tw-dol").checked = false;
+  $("#f-twin").hidden = !show100 && !showDol;
+}
+function twinLines() {
+  return [...document.querySelectorAll('input[name="twin"]:checked')].map(el => [el.id === "tw-100" ? "쌍둥이 백일 한복" : "쌍둥이 돌 한복", Number(el.dataset.price)]);
 }
 function applyDate() {
   const v = $("#date").value; let sunday = false;
@@ -744,6 +766,7 @@ function priceLines() {
     list = 590000; sale = 480000; rows.push(["출장 돌상 상차림", won(480000), 590000]);
     if (checked("photo") === "촬영 추가") { list += 200000; sale += 120000; rows.push(["촬영 추가", won(120000), 200000]); }
   }
+  if (known === true) twinLines().forEach(([label, price]) => { list += price; sale += price; rows.push([label, "+" + won(price), price]); });
   return { rows, list, sale, known, promo, deposit: FORMS[m].deposit };
 }
 function update() {
@@ -772,7 +795,7 @@ function required() {
   const m = mode(), r = [
     ["f-flower", () => checked("flower")], ["f-screen", () => checked("screen")],
     ["f-date", () => $("#date").value], ["f-honoree", () => $("#honoree").value.trim()],
-    ["f-gender", () => isParents() || checked("gender")], ["f-name", () => $("#name").value.trim()],
+    ["f-gender", () => isParents() || checkedAll("gender").length > 0], ["f-name", () => $("#name").value.trim()],
     ["f-phone", () => /^01\d{8,9}$/.test($("#phone").value.replace(/\D/g, ""))],
     ["f-email", () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("#email").value.trim())],
     ["f-receipt", () => $("#receipt").value.trim()], ["f-promo", () => checked("promo")],
@@ -793,7 +816,7 @@ function collect() {
   const m = mode(), p = isParents();
   const data = {
     mode: m, name: $("#name").value.trim(), phone: $("#phone").value.trim(), date: $("#date").value,
-    flower: checked("flower"), screen: checked("screen"), honoree: $("#honoree").value.trim(), gender: p ? "부모님 잔치 시 체크" : checked("gender"),
+    flower: checked("flower"), screen: checked("screen"), honoree: $("#honoree").value.trim(), gender: p ? ["부모님 잔치 시 체크"] : checkedAll("gender"), twin: checkedAll("twin"),
     people: `어른 ${people.adults}명, 아이 ${people.kids}명`, receipt: $("#receipt").value.trim(), email: $("#email").value.trim(),
     promo: checked("promo"), parents: p
   };
@@ -805,7 +828,7 @@ function connected(m) { return Object.entries(FORMS[m].entries).every(([k, v]) =
 function toParams(d) {
   const F = FORMS[d.mode], e = F.entries, q = new URLSearchParams(), put = (k, v) => { if (e[k]) q.append("entry." + e[k], v); };
   put("name", d.name); put("phone", d.phone); put("flower", d.flower); put("screen", d.screen);
-  put("honoree", d.honoree); put("gender", d.gender); put("people", d.people); put("receipt", d.receipt);
+  put("honoree", d.honoree); d.gender.forEach(g => put("gender", g)); d.twin.forEach(t => put("twin", t)); put("people", d.people); put("receipt", d.receipt);
   put("email", d.email); put("promo", d.promo); put("agree1", AGREE_VALUE); put("agree2", AGREE_VALUE);
   const [y, mo, dd] = d.date.split("-");
   if (e.date) { q.append(`entry.${e.date}_year`, y); q.append(`entry.${e.date}_month`, String(+mo)); q.append(`entry.${e.date}_day`, String(+dd)); }
@@ -829,7 +852,8 @@ function showDone(d, preview) {
   const rows = [["예약 방식", d.mode === "visit" ? "스튜디오 방문" : "출장 돌상"],
     ["상차림", d.mode === "visit" ? d.table : (d.photo === "촬영 추가" ? "출장 돌상 + 촬영" : "출장 돌상")],
     ["날짜", d.date.replaceAll("-", ". ")], ["시간", d.time.split(" ")[0]], ["꽃 · 병풍", `${d.flower} · ${d.screen}`],
-    [d.parents ? "주인공" : "아기", d.parents ? d.honoree : `${d.honoree} (${d.gender})`],
+    [d.parents ? "주인공" : "아기", d.parents ? d.honoree : `${d.honoree} (${d.gender.join(", ")})`],
+    ...(d.twin.length ? [["쌍둥이 한복", d.twin.map(t => t.split(" +")[0]).join(", ")]] : []),
     ["인원", d.people], ["예약자", `${d.name} · ${d.phone}`]];
   if (d.place) rows.splice(4, 0, ["장소", d.place]);
   rows.forEach(([a, b]) => { const w = document.createElement("div"), dt = document.createElement("dt"), dd = document.createElement("dd");
@@ -868,7 +892,7 @@ document.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click"
 }));
 document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener("change", applyMode));
 document.querySelectorAll('input[name="table"]').forEach(r => r.addEventListener("change", () => { applyHonoree(); update(); }));
-document.querySelectorAll('input[name="flower"], input[name="photo"], input[name="promo"]').forEach(r => r.addEventListener("change", update));
+document.querySelectorAll('input[name="flower"], input[name="photo"], input[name="promo"], input[name="twin"]').forEach(r => r.addEventListener("change", update));
 $("#date").addEventListener("change", applyDate);
 $("#bk").addEventListener("input", e => { const f = e.target.closest(".field"); if (f) f.classList.remove("invalid"); });
 $("#bk").addEventListener("change", e => { const f = e.target.closest(".field"); if (f) f.classList.remove("invalid"); });
