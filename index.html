@@ -698,7 +698,7 @@ const FORMS = {
   outing: {
     id: "1FAIpQLSflXdNtjR1a77rw2mgbJWuF8TYWY_qhYuOFraWaeRlBwtEDOQ",
     deposit: 250000,
-    entries: { name:"1000057", phone:"1000027", date:"967112212", time:"2055232012",
+    entries: { name:"1000057", phone:"1000027", date:"1795368630", time:"2055232012", otable:"967112212",
                place:"1000020", flower:"2002863747", screen:"1000026", honoree:"1081691998", gender:"1000022",
                people:"1000025", receipt:"1047653863", email:"1631296634", promo:"688383679",
                agree1:"2101725047", agree2:"515021855", twin:"1146649103", photo:"" } // photo: 폼에 질문 추가 후 입력
@@ -846,7 +846,8 @@ function toParams(d) {
   } else {
     if (e.time) { const [h, mi] = d.time.split(":"); q.append(`entry.${e.time}_hour`, String(+h)); q.append(`entry.${e.time}_minute`, mi); }
     // 촬영 칸이 아직 폼에 없으면 장소 칸 끝에 붙여서 정보가 빠지지 않게 함
-    if (e.photo) { put("place", d.place); put("photo", d.photo); } else put("place", `${d.place}\n[${d.otable} · ${d.photo}]`);
+    if (e.photo) { put("place", d.place); put("photo", d.photo); } else put("place", `${d.place}\n[${d.photo}]`);
+    put("otable", d.otable);
   }
   return q;
 }
