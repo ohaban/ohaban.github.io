@@ -734,7 +734,6 @@ const REFUND = {
   outing: "예약금 입금 후 1개월 이내 취소 시 전액 환불, 그 이후에는 취소할 수 없습니다. 질병이나 감염병으로 인한 날짜 변경은 1회 가능합니다."
 };
 const people = { adults: 2, kids: 1 };
-const STUDIO_MAX = 10;   // 스튜디오 방문 최대 인원
 
 function mode() { return checked("mode") || "visit"; }
 function isParents() { return mode() === "visit" && PARENTS.includes(checked("table")); }
@@ -749,10 +748,6 @@ function applyMode() {
   $("#refundRule").textContent = REFUND[m];
   $("#peopleLabel").textContent = m === "visit" ? "방문 인원" : "잔치 참석 인원";
   $("#peopleHint").textContent = m === "visit" ? "스튜디오는 최대 10인까지 가능합니다. 방문 전에 인원이 바뀌면 미리 알려주세요." : "정확하지 않아도 대략적인 인원을 알려주세요.";
-  if (m === "visit") {   // 출장에서 넘어올 때 10인 초과면 맞춰 줄임
-    while (people.adults + people.kids > STUDIO_MAX) { if (people.kids > 0) people.kids--; else people.adults--; }
-    $("#adults").textContent = people.adults; $("#kids").textContent = people.kids;
-  }
   applyHonoree(); update();
 }
 function applyHonoree() {
@@ -920,9 +915,7 @@ function selectAcct() { const r = document.createRange(); r.selectNodeContents($
 
 document.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click", () => {
   const k = b.dataset.step, d = Number(b.dataset.d);
-  const cap = mode() === "visit" ? STUDIO_MAX : 40;
-  if (d > 0 && people.adults + people.kids >= cap) return;
-  people[k] = Math.max(k === "adults" ? 1 : 0, people[k] + d);
+  people[k] = Math.max(k === "adults" ? 1 : 0, Math.min(40, people[k] + d));
   $("#" + k).textContent = people[k];
 }));
 document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener("change", applyMode));
