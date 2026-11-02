@@ -212,6 +212,11 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 
 .about-photo { display: block; width: 100%; height: auto; border-radius: var(--r); }
 
+.pay-sum { display: grid; gap: 4px; margin-top: 6px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 14px; font-variant-numeric: tabular-nums; }
+.pay-sum div { display: flex; justify-content: space-between; gap: 12px; }
+.pay-sum div span:first-child { color: var(--muted); }
+.pay-sum div span:last-child { font-weight: 600; }
+
 /* menu */
 .sec-title { font-family: var(--font-display); font-weight: 600; font-size: 20px; margin: 0; }
 .sec-sub { margin: 4px 0 0; color: var(--muted); font-size: 14px; }
@@ -605,6 +610,10 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
       <span class="hint">예약금</span>
       <span class="amt" id="doneDeposit">150,000원</span>
       <div class="acct"><code id="acctText"></code><button type="button" class="btn-line" id="copyBtn">계좌 복사</button></div>
+      <div class="pay-sum" id="paySum">
+        <div><span>합계 (할인 적용)</span><span id="doneTotal"></span></div>
+        <div><span>잔금</span><span id="doneBalance"></span></div>
+      </div>
     </div>
     <a class="kakao" id="kakaoBtn" href="#" target="_blank" rel="noopener">카카오톡 채널로 입금 알리기</a>
     <div class="event">
@@ -863,6 +872,11 @@ function toParams(d) {
 function showDone(d, preview) {
   const p = priceLines();
   $("#doneDeposit").textContent = won(p.deposit);
+  if (p.known === true) {
+    const total = p.sale - (p.promo ? 10000 : 0);
+    $("#doneTotal").textContent = won(total); $("#doneBalance").textContent = won(total - p.deposit);
+    $("#paySum").hidden = false;
+  } else $("#paySum").hidden = true;
   const acct = SHOP.account ? `${SHOP.bank} ${SHOP.account} (${SHOP.holder})` : "입금 계좌는 카카오톡으로 안내드립니다";
   $("#acctText").textContent = acct; $("#copyBtn").hidden = !SHOP.account;
   const k = $("#kakaoBtn"); if (SHOP.kakao) { k.href = SHOP.kakao; k.hidden = false; } else k.hidden = true;
