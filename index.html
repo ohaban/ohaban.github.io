@@ -528,7 +528,7 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
             <div class="stepper"><span class="who">어른</span><span class="ctl"><button type="button" data-step="adults" data-d="-1" aria-label="어른 한 명 줄이기">−</button><output id="adults">2</output><button type="button" data-step="adults" data-d="1" aria-label="어른 한 명 늘리기">+</button></span></div>
             <div class="stepper"><span class="who">아이</span><span class="ctl"><button type="button" data-step="kids" data-d="-1" aria-label="아이 한 명 줄이기">−</button><output id="kids">1</output><button type="button" data-step="kids" data-d="1" aria-label="아이 한 명 늘리기">+</button></span></div>
           </div>
-          <p class="hint">방문 전에 인원이 바뀌면 미리 알려주세요.</p>
+          <p class="hint" id="peopleHint">스튜디오는 최대 10인까지 가능합니다. 방문 전에 인원이 바뀌면 미리 알려주세요.</p>
         </div>
       </fieldset>
 
@@ -564,6 +564,7 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
             <label class="chip"><input type="radio" name="promo" id="pr-yes" value="참여"><span>동의 <small>1만원 추가 할인</small></span></label>
             <label class="chip"><input type="radio" name="promo" id="pr-no" value="미참여"><span>동의하지 않음</span></label>
           </div>
+          <p class="hint">아기 얼굴만 공개하는 것으로도 동의하실 수 있어요.</p>
           <span class="err">동의 여부를 골라 주세요.</span>
         </div>
         <div class="field" id="f-agree1">
@@ -724,6 +725,7 @@ const REFUND = {
   outing: "예약금 입금 후 1개월 이내 취소 시 전액 환불, 그 이후에는 취소할 수 없습니다. 질병이나 감염병으로 인한 날짜 변경은 1회 가능합니다."
 };
 const people = { adults: 2, kids: 1 };
+const STUDIO_MAX = 10;   // 스튜디오 방문 최대 인원
 
 function mode() { return checked("mode") || "visit"; }
 function isParents() { return mode() === "visit" && PARENTS.includes(checked("table")); }
@@ -737,13 +739,19 @@ function applyMode() {
     : "같은 날짜에 신청이 두 건 이상이면 먼저 입금하신 분이 우선 예약됩니다.";
   $("#refundRule").textContent = REFUND[m];
   $("#peopleLabel").textContent = m === "visit" ? "방문 인원" : "잔치 참석 인원";
+  $("#peopleHint").textContent = m === "visit" ? "스튜디오는 최대 10인까지 가능합니다. 방문 전에 인원이 바뀌면 미리 알려주세요." : "정확하지 않아도 대략적인 인원을 알려주세요.";
+  if (m === "visit") {   // 출장에서 넘어올 때 10인 초과면 맞춰 줄임
+    while (people.adults + people.kids > STUDIO_MAX) { if (people.kids > 0) people.kids--; else people.adults--; }
+    $("#adults").textContent = people.adults; $("#kids").textContent = people.kids;
+  }
   applyHonoree(); update();
 }
 function applyHonoree() {
   const p = isParents();
-  $("#whoTitle").textContent = p ? "주인공과 방문 인원" : (mode() === "visit" ? "아기와 방문 인원" : "아기와 참석 인원");
+  $("#whoTitle").textContent = p ? "방문 인원" : (mode() === "visit" ? "아기와 방문 인원" : "아기와 참석 인원");
   $("#honoreeLabel").textContent = p ? "주인공 성함" : "아기 이름";
   $("#f-gender").hidden = p;
+  $("#f-honoree").hidden = p;   // 부모님 잔치는 이름 받지 않음 (폼에는 "부모님 잔치"로 전송)
   applyTwin();
 }
 function applyTwin() {
@@ -803,7 +811,7 @@ function update() {
 function required() {
   const m = mode(), r = [
     ["f-flower", () => checked("flower")], ["f-screen", () => checked("screen")],
-    ["f-date", () => $("#date").value], ["f-honoree", () => $("#honoree").value.trim()],
+    ["f-date", () => $("#date").value], ["f-honoree", () => isParents() || $("#honoree").value.trim()],
     ["f-gender", () => isParents() || checkedAll("gender").length > 0], ["f-name", () => $("#name").value.trim()],
     ["f-phone", () => /^01\d{8,9}$/.test($("#phone").value.replace(/\D/g, ""))],
     ["f-email", () => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($("#email").value.trim())],
@@ -825,7 +833,7 @@ function collect() {
   const m = mode(), p = isParents();
   const data = {
     mode: m, name: $("#name").value.trim(), phone: $("#phone").value.trim(), date: $("#date").value,
-    flower: checked("flower"), screen: checked("screen"), honoree: $("#honoree").value.trim(), gender: p ? ["부모님 잔치 시 체크"] : checkedAll("gender"), twin: checkedAll("twin"),
+    flower: checked("flower"), screen: checked("screen"), honoree: p ? "부모님 잔치" : $("#honoree").value.trim(), gender: p ? ["부모님 잔치 시 체크"] : checkedAll("gender"), twin: checkedAll("twin"),
     people: `어른 ${people.adults}명, 아이 ${people.kids}명`, receipt: $("#receipt").value.trim(), email: $("#email").value.trim(),
     promo: checked("promo"), parents: p
   };
@@ -862,7 +870,7 @@ function showDone(d, preview) {
   const rows = [["예약 방식", d.mode === "visit" ? "스튜디오 방문" : "출장 상차림"],
     ["상차림", d.mode === "visit" ? d.table : (d.photo === "촬영 추가" ? `출장 ${d.otable} + 촬영` : `출장 ${d.otable}`)],
     ["날짜", d.date.replaceAll("-", ". ")], ["시간", d.time.split(" ")[0]], ["꽃 · 병풍", `${d.flower} · ${d.screen}`],
-    [d.parents ? "주인공" : "아기", d.parents ? d.honoree : `${d.honoree} (${d.gender.join(", ")})`],
+    ...(d.parents ? [] : [["아기", `${d.honoree} (${d.gender.join(", ")})`]]),
     ...(d.twin.length ? [["쌍둥이 한복", d.twin.map(t => t.split(" +")[0]).join(", ")]] : []),
     ["인원", d.people], ["예약자", `${d.name} · ${d.phone}`]];
   if (d.place) rows.splice(4, 0, ["장소", d.place]);
@@ -897,7 +905,10 @@ $("#copyBtn").addEventListener("click", () => {
 function selectAcct() { const r = document.createRange(); r.selectNodeContents($("#acctText")); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
 
 document.querySelectorAll("[data-step]").forEach(b => b.addEventListener("click", () => {
-  const k = b.dataset.step; people[k] = Math.max(k === "adults" ? 1 : 0, Math.min(40, people[k] + Number(b.dataset.d)));
+  const k = b.dataset.step, d = Number(b.dataset.d);
+  const cap = mode() === "visit" ? STUDIO_MAX : 40;
+  if (d > 0 && people.adults + people.kids >= cap) return;
+  people[k] = Math.max(k === "adults" ? 1 : 0, people[k] + d);
   $("#" + k).textContent = people[k];
 }));
 document.querySelectorAll('input[name="mode"]').forEach(r => r.addEventListener("change", applyMode));
