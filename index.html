@@ -612,7 +612,7 @@ footer nav a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2
       <div class="acct"><code id="acctText"></code><button type="button" class="btn-line" id="copyBtn">계좌 복사</button></div>
       <div class="pay-sum" id="paySum">
         <div><span>합계 (할인 적용)</span><span id="doneTotal"></span></div>
-        <div><span>잔금</span><span id="doneBalance"></span></div>
+        <div><span>잔금 · 촬영 당일 결제</span><span id="doneBalance"></span></div>
       </div>
     </div>
     <a class="kakao" id="kakaoBtn" href="#" target="_blank" rel="noopener">카카오톡 채널로 입금 알리기</a>
@@ -809,11 +809,11 @@ function update() {
     if (p.promo) { add("홍보 사진 동의 할인", "−" + won(10000)); total -= 10000; }
     add("합계", won(total), "total");
     add("예약금 · 신청 후 입금", won(p.deposit), "deposit split");
-    add("잔금", won(total - p.deposit), "balance");
+    add("잔금 · 촬영 당일 결제", won(total - p.deposit), "balance");
     return;
   }
   add("예약금 · 신청 후 입금", won(p.deposit), "deposit split");
-  add("잔금", p.known === false ? "상담 후 안내" : "상차림 선택 후 표시", "balance");
+  add("잔금 · 촬영 당일 결제", p.known === false ? "상담 후 안내" : "상차림 선택 후 표시", "balance");
 }
 
 /* validation */
